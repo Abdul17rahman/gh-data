@@ -63,7 +63,7 @@ jobs:
           name: dist-files
 
       - name: Get output value from build
-        run: echo "${{ needs.build.outputs.script-file }}""
+        run: echo "${{ needs.build.outputs.script-file }}"
 
       - name: Output the downloaded files
         run: ls -la
