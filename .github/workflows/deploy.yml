@@ -62,7 +62,7 @@ jobs:
         with:
           name: dist-files # name of the artifact to download
       - name: Output the downloaded files
-        run: ls -la dist
+        run: ls -la dist-files
 
       - name: Success
         run: echo "Deployed successfully..."
