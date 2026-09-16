@@ -30,7 +30,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: tests
+    needs: [lints, tests]
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -45,7 +45,10 @@ jobs:
         uses: actions/upload-artifact@v6 # This action uploads outputed files from the workflow to GitHub so that they can be used by another job in the same workflow or downloaded after the workflow run is complete.
         with:
           name: dist-files # name of the artifact
-          with: dist/** # Uploads all files in the dist directory and its subdirectories
+          path: dist
+          # path: |
+          #   dist
+          #   package.json
 
   deploy:
     runs-on: ubuntu-latest
