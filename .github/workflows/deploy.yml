@@ -19,7 +19,6 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    needs: lints
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -43,7 +42,7 @@ jobs:
         run: npm run build
 
       - name: Upload build output files/artifacts
-        uses: actions/upload-artifact@v3 # This action uploads outputed files from the workflow to GitHub so that they can be used by another job in the same workflow or downloaded after the workflow run is complete.
+        uses: actions/upload-artifact@v6 # This action uploads outputed files from the workflow to GitHub so that they can be used by another job in the same workflow or downloaded after the workflow run is complete.
         with:
           name: dist-files # name of the artifact
           with: dist/** # Uploads all files in the dist directory and its subdirectories
