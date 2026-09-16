@@ -6,7 +6,6 @@ on: push # Runs only on push event for any branche
 
 jobs:
   lints:
-    if: "!contains(github.event.head_commit.message, '[skip checks]')"
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -19,7 +18,6 @@ jobs:
         run: npm run lint
 
   tests:
-    if: "!contains(github.event.head_commit.message, '[skip checks]')"
     runs-on: ubuntu-latest
     steps:
       - name: Get code
@@ -31,11 +29,10 @@ jobs:
         run: npm run test
 
   build:
-    if: "!contains(github.event.head_commit.message, '[skip checks]')"
+    needs: [lints, tests]
     runs-on: ubuntu-latest
     outputs:
-      script-file: ${{ steps.publish.outputs.script-file }} # Outputs a value for other job to use..
-    needs: [lints, tests]
+      script-file: ${{ steps.publish.outputs.script-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -48,26 +45,22 @@ jobs:
 
       - name: Set output value
         id: publish
-        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';' # Run a command to find the file and set it as an output value.
+        run: find dist/assets/*.js -type f -execdir echo 'script-file={}' >> $GITHUB_OUTPUT ';'
 
       - name: Upload build output files/artifacts
-        uses: actions/upload-artifact@v6 # This action uploads outputed files from the workflow to GitHub so that they can be used by another job in the same workflow or downloaded after the workflow run is complete.
+        uses: actions/upload-artifact@v6
         with:
-          name: dist-files # name of the artifact
+          name: dist-files
           path: dist
-          # path: |
-          #   dist
-          #   package.json
 
   deploy:
-    if: "!contains(github.event.head_commit.message, '[skip checks]')"
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: Download build output files
-        uses: actions/download-artifact@v6 # This action downloads the outputed files/artifacts from the previous job in the same workflow.
+        uses: actions/download-artifact@v6
         with:
-          name: dist-files # name of the artifact to download
+          name: dist-files
 
       - name: Get output value from build
         run: echo "${{ needs.build.outputs.script-file }}""
